@@ -10,18 +10,17 @@ module Bucket::Accessible
         end
       end
 
-      private
-        def grant_to(users)
-          Access.insert_all Array(users).collect { |user| { bucket_id: proxy_association.owner.id, user_id: user.id } }
-        end
+      def grant_to(users)
+        Access.insert_all Array(users).collect { |user| { bucket_id: proxy_association.owner.id, user_id: user.id } }
+      end
 
-        def revoke_from(users)
-          destroy_by user: users
-        end
+      def revoke_from(users)
+        destroy_by user: users
+      end
     end
 
     has_many :users, through: :accesses
 
-    after_create -> { accesses.grant_to(creator) }
+    after_create -> { accesses.grant_to creator }
   end
 end
